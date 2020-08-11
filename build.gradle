@@ -39,6 +39,8 @@ minecraft {
 
 dependencies {
     compile 'com.github.HypixelDev.PublicAPI:Example:master-SNAPSHOT'
+
+    compile 'com.github.ThomasVDP:HypixelPublicAPIMod:library-SNAPSHOT'
 }
 
 configurations {
