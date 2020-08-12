@@ -48,6 +48,10 @@ configurations {
     compile.extendsFrom shadow
 }
 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 shadowJar {
     archiveName = tasks.jar.archiveName
     configurations = [project.configurations.compile]

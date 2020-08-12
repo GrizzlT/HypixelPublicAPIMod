@@ -14,8 +14,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
 import java.util.UUID;
@@ -77,14 +77,13 @@ public class HypixelPublicAPIMod
     public void init(FMLInitializationEvent event)
     {
         FMLCommonHandler.instance().bus().register(this);
-        MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(apiManager);
     }
 
-    @SubscribeEvent
-    public void onHypixelAPIEvent(OnHpPublicAPIReadyEvent event)
+    @Mod.EventHandler
+    public void loadComplete(FMLLoadCompleteEvent event)
     {
-        event.receiver.onReceivePublicAPIManager(this.apiManager);
+        MinecraftForge.EVENT_BUS.post(new OnHpPublicAPIReadyEvent(this.apiManager));
     }
 
     public HypixelAPI getHypixelAPI() {
@@ -99,7 +98,6 @@ public class HypixelPublicAPIMod
             this.apiKeySet = false;
             return;
         }
-
 
         try {
             this.hypixelAPI = new HypixelAPI(this.apiKey);

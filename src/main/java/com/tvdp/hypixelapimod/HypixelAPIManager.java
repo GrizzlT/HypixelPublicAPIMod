@@ -1,6 +1,7 @@
 package com.tvdp.hypixelapimod;
 
 import com.tvdp.hypixelpublicapi.HypixelPublicAPIModLibrary;
+import com.tvdp.hypixelpublicapi.error.PublicAPIKeyMissingException;
 import net.hypixel.api.HypixelAPI;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -19,8 +20,10 @@ public class HypixelAPIManager implements HypixelPublicAPIModLibrary
     private final Object blockingObject = new Object();
 
     @Override
-    public <T> void handleHypixelAPIRequest(Function<HypixelAPI, T> requestFunc)
+    public <T> void handleHypixelAPIRequest(Function<HypixelAPI, T> requestFunc) throws PublicAPIKeyMissingException
     {
+        if (!HypixelPublicAPIMod.instance.apiKeySet) throw new PublicAPIKeyMissingException();
+
         executorService.submit(() -> {
             synchronized (blockingObject) {
                 while (requestCount.get() >= 110) {
