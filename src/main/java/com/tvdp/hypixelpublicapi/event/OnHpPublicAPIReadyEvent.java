@@ -1,20 +1,20 @@
 package com.tvdp.hypixelpublicapi.event;
 
-import com.tvdp.hypixelpublicapi.HypixelAPIReceiver;
+import com.tvdp.hypixelpublicapi.HypixelPublicAPIModLibrary;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
- * This event must be triggered by the mod that will use the api manager
+ * This event will be triggered by the mod that will hold the api
  */
 public class OnHpPublicAPIReadyEvent extends Event
 {
-    public final HypixelAPIReceiver receiver;
+    public final HypixelPublicAPIModLibrary publicAPILibrary;
 
     /**
-     * @param receiver the class that will manage storage of the api manager
+     * @param publicAPILibrary the class that will the api
      */
-    public OnHpPublicAPIReadyEvent(HypixelAPIReceiver receiver)
+    public OnHpPublicAPIReadyEvent(HypixelPublicAPIModLibrary publicAPILibrary)
     {
-        this.receiver = receiver;
+        this.publicAPILibrary = publicAPILibrary;
     }
 }
