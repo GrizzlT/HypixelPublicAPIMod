@@ -7,5 +7,5 @@ import java.util.function.Function;
 
 public interface HypixelPublicAPIModLibrary
 {
-    <T> void handleHypixelAPIRequest(Function<HypixelAPI, T> requestFunc) throws PublicAPIKeyMissingException;
+    <T> T handleHypixelAPIRequest(Function<HypixelAPI, T> requestFunc) throws PublicAPIKeyMissingException;
 }
