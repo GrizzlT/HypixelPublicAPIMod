@@ -1,5 +1,6 @@
 package com.tvdp.hypixelpublicapi.error;
 
-public class PublicAPIKeyMissingException extends Exception
+public class PublicAPIKeyMissingException extends RuntimeException
 {
+
 }
