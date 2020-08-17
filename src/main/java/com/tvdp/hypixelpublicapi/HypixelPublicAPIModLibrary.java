@@ -8,5 +8,5 @@ import java.util.function.Function;
 
 public interface HypixelPublicAPIModLibrary
 {
-    <T> CompletableFuture<T> handleHypixelAPIRequest(Function<HypixelAPI, T> requestFunc) throws PublicAPIKeyMissingException;
+    <T> CompletableFuture<T> handleHypixelAPIRequest(Function<HypixelAPI, CompletableFuture<T>> requestFunc) throws PublicAPIKeyMissingException;
 }
