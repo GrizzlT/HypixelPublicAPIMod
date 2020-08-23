@@ -13,10 +13,6 @@ buildscript {
     }
 }
 
-plugins {
-    id "com.github.johnrengelman.shadow" version "4.0.4"
-}
-
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 /*
@@ -26,7 +22,7 @@ plugins {
 }
 */
 version = "1.0"
-group= "com.tvdp.hypixelapimod" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group= "com.github.ThomasVDP.hypixelapimod" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "HypixelPublicAPIMod"
 
 sourceCompatibility = targetCompatibility = 8
@@ -37,39 +33,34 @@ minecraft {
     mappings = "stable_20"
 }
 
-dependencies {
-    compile 'com.github.HypixelDev.PublicAPI:Example:master-SNAPSHOT'
-
-    compile 'com.github.ThomasVDP:HypixelPublicAPIMod:library-SNAPSHOT'
+configurations {
+    shade
+    compile.extendsFrom shade
 }
 
-configurations {
-    shadow
-    compile.extendsFrom shadow
+dependencies {
+    //compile 'com.github.HypixelDev.PublicAPI:Example:master-SNAPSHOT'
+
+    shade 'com.github.ThomasVDP:HypixelPublicAPIMod:library-SNAPSHOT'
+}
+
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
-shadowJar {
-    archiveName = tasks.jar.archiveName
-    configurations = [project.configurations.compile]
-    relocate 'net.hypixel.api', 'com.tvdp.hypixelapimod.shadowedLibs.net.hypixel.api'
-    exclude 'net/hypixel/example/**'
-}
-jar.dependsOn shadowJar
-jar.enabled = false
-
-reobf {
-    shadowJar {
-        mappingType = "SEARGE"
-    }
-    jar {
-        useNotchSrg()
+jar {
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)) {
+            exclude 'META-INF', 'META-INF/**'
+        }
     }
 }
-tasks.reobfShadowJar.mustRunAfter shadowJar
 
 processResources
 {
@@ -88,11 +79,5 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
-    }
-}
-
-allprojects {
-    repositories {
-        maven { url 'https://jitpack.io' }
     }
 }

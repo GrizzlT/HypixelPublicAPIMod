@@ -1,11 +1,11 @@
-package com.tvdp.hypixelapimod;
+package com.github.ThomasVDP.hypixelapimod;
 
-import com.tvdp.hypixelapimod.commands.LoadApiKeyCommand;
-import com.tvdp.hypixelapimod.commands.SaveApiKeyCommand;
-import com.tvdp.hypixelapimod.commands.SetApiKeyCommand;
-import com.tvdp.hypixelapimod.commands.UnSetApiKeyCommand;
-import com.tvdp.hypixelpublicapi.event.OnHpPublicAPIReadyEvent;
-import net.hypixel.api.HypixelAPI;
+import com.github.ThomasVDP.hypixelapimod.commands.SaveApiKeyCommand;
+import com.github.ThomasVDP.hypixelpublicapi.event.OnHpPublicAPIReadyEvent;
+import com.github.ThomasVDP.hypixelapimod.commands.LoadApiKeyCommand;
+import com.github.ThomasVDP.hypixelapimod.commands.SetApiKeyCommand;
+import com.github.ThomasVDP.hypixelapimod.commands.UnSetApiKeyCommand;
+import com.github.ThomasVDP.shadowedLibs.net.hypixel.api.HypixelAPI;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -52,7 +52,7 @@ public class HypixelPublicAPIMod
         if (config.get(Configuration.CATEGORY_GENERAL, "loadAuto", true).getBoolean()) {
             try {
                 this.apiKey = UUID.fromString(config.get(Configuration.CATEGORY_GENERAL, "apiKey", "").getString());
-                this.hypixelAPI = new HypixelAPI(this.apiKey);
+                this.setApiKey(this.apiKey);
 
                 System.out.println("Automatically loaded stored api key!");
             } catch (IllegalArgumentException e) {
