@@ -80,7 +80,7 @@ jar {
     }
 }
 
-def localMavenDir = "${System.properties['user.home']}/.m2/repository"
+def localMavenDir = "~/.m2/repository"
 
 task copyJarToBin(type: Copy) {
     from 'build/libs/hypixel-public-api-library-1.0.jar'
