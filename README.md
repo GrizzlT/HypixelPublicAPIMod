@@ -11,7 +11,7 @@ It wouldn't really be user-friendly if every mod handled this part (especially t
 That's the reason why this mod was made. It has following features:
 - This mod will manage the user's `API key` in one place
 - This mod will provide an instance of the API to other mods!
-- This mod will check whether an API key is present and whether the amount of queries sent, hasn't exceeded the query limit.
+- This mod will check whether an `API key` is present and whether the amount of queries sent, hasn't exceeded the query limit.
 
 Currently, this check is hard-coded and defaults to 115 queries every 62 seconds. (*115 for the purpose of being 100% certain there will be no query loss, this might change in the future to allow a more flexible way of defining this limit)*
 
