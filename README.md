@@ -22,7 +22,7 @@ That's it, the mod is ready for use!
 See [Commands](#Commands) for further information.
 
 ## Getting Started (for developers)
-This mod's API can be added to your project using JitPack.
+This mod's API can be added to your project using JitPack (use tag `v1.0-library`).
 [![](https://jitpack.io/v/ThomasVDP/HypixelPublicAPIMod.svg)](https://jitpack.io/#ThomasVDP/HypixelPublicAPIMod)
 
 Subscribe to the `OnHpPublicAPIReadyEvent` event to receive an instance of the `HypixelPublicAPIModLibrary`.
