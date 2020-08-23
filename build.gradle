@@ -41,7 +41,7 @@ configurations {
 dependencies {
     //compile 'com.github.HypixelDev.PublicAPI:Example:master-SNAPSHOT'
 
-    shade 'com.github.ThomasVDP:HypixelPublicAPIMod:library-SNAPSHOT'
+    shade 'com.github.ThomasVDP:HypixelPublicAPIMod:v1.0-library'
 }
 
 allprojects {
