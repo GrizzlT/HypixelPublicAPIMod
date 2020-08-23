@@ -60,10 +60,10 @@ allprojects {
 reobf {
     jar {
         extraLines "PK: net/tascalate/concurrent com/github/ThomasVDP/shadowedLibs/net/tascalate/concurrent"
-        extraLines "PK: com/google/gson com/github/ThomasVDP/shadowedLibs/com/google/gson"
+        //extraLines "PK: com/google/gson com/github/ThomasVDP/shadowedLibs/com/google/gson"
         extraLines "PK: net/hypixel/api com/github/ThomasVDP/shadowedLibs/net/hypixel/api"
         extraLines "PK: org/apache/http com/github/ThomasVDP/shadowedLibs/org/apache/http"
-        extraLines "PK: org/apache/commons com/github/ThomasVDP/shadowedLibs/org/apache/commons"
+        //extraLines "PK: org/apache/commons com/github/ThomasVDP/shadowedLibs/org/apache/commons"
     }
 }
 
@@ -74,6 +74,9 @@ reobf {
 }*/
 
 jar {
+    exclude 'com/google/gson', 'com/google/gson/**'
+    exclude 'org/apache/commons', 'org/apache/commons/**'
+
     configurations.shade.each { dep ->
         from(project.zipTree(dep)) {
             exclude 'META-INF', 'META-INF/**'
