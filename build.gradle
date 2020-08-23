@@ -81,6 +81,10 @@ jar {
     }
 }
 
+artifacts {
+    jar
+}
+
 processResources
 {
     // this will ensure that this task is redone when the versions change.
