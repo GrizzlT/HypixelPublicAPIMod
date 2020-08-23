@@ -1,6 +1,6 @@
-package com.tvdp.hypixelpublicapi.event;
+package com.github.ThomasVDP.hypixelpublicapi.event;
 
-import com.tvdp.hypixelpublicapi.HypixelPublicAPIModLibrary;
+import com.github.ThomasVDP.hypixelpublicapi.HypixelPublicAPIModLibrary;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**

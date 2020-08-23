@@ -1,4 +1,4 @@
-package com.tvdp.hypixelpublicapi.error;
+package com.github.ThomasVDP.hypixelpublicapi.error;
 
 public class PublicAPIKeyMissingException extends RuntimeException
 {

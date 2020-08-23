@@ -1,6 +1,6 @@
-package com.tvdp.hypixelpublicapi;
+package com.github.ThomasVDP.hypixelpublicapi;
 
-import com.tvdp.hypixelpublicapi.error.PublicAPIKeyMissingException;
+import com.github.ThomasVDP.hypixelpublicapi.error.PublicAPIKeyMissingException;
 import net.hypixel.api.HypixelAPI;
 import net.tascalate.concurrent.Promise;
 
