@@ -15,6 +15,7 @@ buildscript {
 /*plugins {
     id "com.github.johnrengelman.shadow" version "1.2.4"
 }*/
+apply plugin: 'maven-publish'
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 /*
@@ -80,13 +81,17 @@ jar {
     }
 }
 
-def localMavenDir = ".m2/repository"
-
-task copyJarToBin(type: Copy) {
-    from 'build/libs/hypixel-public-api-library-1.0.jar'
-    into localMavenDir
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            // more goes in here
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
 }
-build.dependsOn copyJarToBin
 
 processResources
 {
