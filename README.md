@@ -8,7 +8,7 @@ Some mods might want to use [Hypixel's Public API](https://github.com/HypixelDev
 
 It wouldn't really be user-friendly if every mod handled this part (especially the key part) on their own.
 
-That's the reason this mod was made. It has following features:
+That's the reason why this mod was made. It has following features:
 - This mod will manage the user's `API key` in one place
 - This mod will provide an instance of the API to other mods!
 - This mod will check whether an API key is present and whether the amount of queries sent, hasn't exceeded the query limit.
