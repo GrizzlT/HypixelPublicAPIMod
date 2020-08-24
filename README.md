@@ -1,4 +1,4 @@
-# Hypixel Public API Mod (Forge)
+# Hypixel Public API Mod (Forge 1.8.9)
 This is a forge mod implementation of the [Hypixel Public API](https://github.com/HypixelDev/PublicAPI)
 
 ## Main idea
