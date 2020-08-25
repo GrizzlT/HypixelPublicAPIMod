@@ -35,15 +35,24 @@ To send a request, simply call `HypixelPublicAPIModLibrary#handleHypixelAPIReque
 ## Commands
 When using the mod you need to tell this mod your `API key` in order for it to work.
 
-#### Only 2 commands are necessary:
+#### You just need 1 command!
+- `/hpapiquickstart`
+
+*Recommended* This command sets everything up for you to use this mod more easily!
+
+#### For finer control:
 - `/hpsetapikey <key>`
+
 Use this command to inform the mod about your key, the `<key>` argument must be replaced by the [`API key`](https://github.com/HypixelDev/PublicAPI#obtaining-an-api-key) you received from hypixel.
 - `/hpsaveapikey`
+
 Use this command to save the `API key` in the config files. It will be loaded at startup by default. (*this behavior can be changed in the mod config*)
-#### Other commands :
+#### Other commands:
 - `/hpunsetapikey`
+
 Use this command to disable the api. This command is necessary to change your `API key`.
 - `/hploadapikey`
+
 Use this command to load your `API key` from the config files. This is usually only required if you don't want the mod to automatically load the keys at startup.
 
 > Written with [StackEdit](https://stackedit.io/).
