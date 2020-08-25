@@ -13,7 +13,7 @@ That's the reason why this mod was made. It has following features:
 - This mod will provide an instance of the API to other mods!
 - This mod will check whether an `API key` is present and whether the amount of queries sent, hasn't exceeded the query limit.
 
-Currently, this check is hard-coded and defaults to 115 queries every 62 seconds. (*115 for the purpose of being 100% certain there will be no query loss, this might change in the future to allow a more flexible way of defining this limit)*
+Currently, this check is hard-coded and defaults to 115 queries every 62 seconds. (*115 for the purpose of being 100% certain there will be no query loss, this will change in the future to allow a more flexible way of defining this limit)*
 
 ## Getting Started (for Forge users)
 Download the latest [release](https://github.com/ThomasVDP/HypixelPublicAPIMod/releases) and put the `HypixelStatsOverlayMod-1.0.jar`-file in your Minecraft mods directory.
