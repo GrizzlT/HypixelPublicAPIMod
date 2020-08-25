@@ -35,7 +35,7 @@ To send a request, simply call `HypixelPublicAPIModLibrary#handleHypixelAPIReque
 ## Commands
 When using the mod you need to tell this mod your `API key` in order for it to work.
 
-#### You just need 1 command!
+### You just need 1 command!
 - `/hpapiquickstart`
 
 *Recommended* This command sets everything up for you to use this mod more easily!
