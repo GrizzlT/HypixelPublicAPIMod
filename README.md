@@ -16,7 +16,7 @@ That's the reason why this mod was made. It has following features:
 Currently, this check is hard-coded and defaults to 115 queries every 62 seconds. (*115 for the purpose of being 100% certain there will be no query loss, this will change in the future to allow a more flexible way of defining this limit)*
 
 ## Getting Started (for Forge users)
-Download the latest [release](https://github.com/ThomasVDP/HypixelPublicAPIMod/releases) and put the `HypixelStatsOverlayMod-1.0.jar`-file in your Minecraft mods directory.
+Download the latest [release](https://github.com/ThomasVDP/HypixelPublicAPIMod/releases) and put the `HypixelPublicAPIMod-1.0.jar`-file in your Minecraft mods directory.
 
 That's it, the mod is ready for use!
 See [Commands](#Commands) for further information.
