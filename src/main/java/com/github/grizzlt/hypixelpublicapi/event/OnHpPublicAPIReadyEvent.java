@@ -1,6 +1,6 @@
-package com.github.ThomasVDP.hypixelpublicapi.event;
+package com.github.grizzlt.hypixelpublicapi.event;
 
-import com.github.ThomasVDP.hypixelpublicapi.HypixelPublicAPIModLibrary;
+import com.github.grizzlt.hypixelpublicapi.HypixelPublicAPIModLibrary;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
