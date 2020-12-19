@@ -50,14 +50,16 @@ dependencyManagement {
 }
 
 dependencies {
-    shade 'net.hypixel:HypixelAPI:3.0.0'
+    //shade 'net.hypixel:HypixelAPI:3.0.0'
+    shade 'com.github.GrizzlT:PublicAPI:master-SNAPSHOT'
 
     shade 'io.projectreactor:reactor-core'
 }
 
 allprojects {
     repositories {
-        maven { url 'https://repo.hypixel.net/repository/Hypixel/' }
+        maven { url = 'https://jitpack.io' }
+        //maven { url 'https://repo.hypixel.net/repository/Hypixel/' }
     }
 }
 
