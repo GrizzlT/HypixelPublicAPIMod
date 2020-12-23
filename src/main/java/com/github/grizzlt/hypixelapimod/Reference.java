@@ -1,4 +1,4 @@
-package com.github.ThomasVDP.hypixelapimod;
+package com.github.grizzlt.hypixelapimod;
 
 public class Reference
 {

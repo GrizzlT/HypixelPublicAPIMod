@@ -1,4 +1,4 @@
-package com.github.ThomasVDP.hypixelapimod.commands;
+package com.github.grizzlt.hypixelapimod.commands;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;

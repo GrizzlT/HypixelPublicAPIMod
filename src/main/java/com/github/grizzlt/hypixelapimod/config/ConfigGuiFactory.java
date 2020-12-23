@@ -1,4 +1,4 @@
-package com.github.ThomasVDP.hypixelapimod.config;
+package com.github.grizzlt.hypixelapimod.config;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;

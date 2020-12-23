@@ -1,8 +1,8 @@
-package com.github.ThomasVDP.hypixelapimod;
+package com.github.grizzlt.hypixelapimod;
 
-import com.github.ThomasVDP.hypixelapimod.commands.*;
-import com.github.ThomasVDP.hypixelpublicapi.event.OnHpPublicAPIReadyEvent;
-import com.github.ThomasVDP.shadowedLibs.net.hypixel.api.HypixelAPI;
+import com.github.grizzlt.hypixelapimod.commands.*;
+import com.github.grizzlt.hypixelpublicapi.event.OnHpPublicAPIReadyEvent;
+import com.github.grizzlt.shadowedLibs.net.hypixel.api.HypixelAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;

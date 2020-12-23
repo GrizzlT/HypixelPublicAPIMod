@@ -1,6 +1,6 @@
-package com.github.ThomasVDP.hypixelapimod.commands;
+package com.github.grizzlt.hypixelapimod.commands;
 
-import com.github.ThomasVDP.hypixelapimod.HypixelPublicAPIMod;
+import com.github.grizzlt.hypixelapimod.HypixelPublicAPIMod;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

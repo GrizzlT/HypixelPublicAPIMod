@@ -22,7 +22,7 @@ plugins {
 }
 */
 version = "1.0"
-group= "com.github.ThomasVDP.hypixelapimod" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group= "com.github.grizzlt.hypixelapimod" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "HypixelPublicAPIMod"
 
 sourceCompatibility = targetCompatibility = 8
@@ -39,9 +39,7 @@ configurations {
 }
 
 dependencies {
-    //compile 'com.github.HypixelDev.PublicAPI:Example:master-SNAPSHOT'
-
-    shade 'com.github.ThomasVDP:HypixelPublicAPIMod:v1.0-library'
+    shade 'com.github.GrizzlT:HypixelPublicAPIMod:library-SNAPSHOT'
 }
 
 allprojects {

@@ -1,8 +1,8 @@
-package com.github.ThomasVDP.hypixelapimod.config;
+package com.github.grizzlt.hypixelapimod.config;
 
+import com.github.grizzlt.hypixelapimod.Reference;
 import com.google.common.collect.Lists;
-import com.github.ThomasVDP.hypixelapimod.HypixelPublicAPIMod;
-import com.github.ThomasVDP.hypixelapimod.Reference;
+import com.github.grizzlt.hypixelapimod.HypixelPublicAPIMod;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;

@@ -1,17 +1,18 @@
-package com.github.ThomasVDP.hypixelapimod.commands;
+package com.github.grizzlt.hypixelapimod.commands;
 
-import com.github.ThomasVDP.hypixelapimod.HypixelPublicAPIMod;
+import com.github.grizzlt.hypixelapimod.HypixelPublicAPIMod;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.common.config.Configuration;
 
-public class UnSetApiKeyCommand extends CommandBase
+public class SaveApiKeyCommand extends CommandBase
 {
     @Override
     public String getCommandName() {
-        return "hpunsetapikey";
+        return "hpsaveapikey";
     }
 
     @Override
@@ -21,7 +22,7 @@ public class UnSetApiKeyCommand extends CommandBase
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/hpunsetapikey";
+        return "/hpsaveapikey";
     }
 
     @Override
@@ -34,11 +35,16 @@ public class UnSetApiKeyCommand extends CommandBase
 
         HypixelPublicAPIMod stats = HypixelPublicAPIMod.instance;
         if (!stats.apiKeySet) {
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "No key present to unbind!"));
+            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "No API key has been set so far!"));
             return;
         }
 
-        stats.setApiKey(null);
-        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "Successfully unset API key!"));
+        try {
+            HypixelPublicAPIMod.config.get(Configuration.CATEGORY_GENERAL, "apiKey", "").set(stats.apiKey.toString());
+            HypixelPublicAPIMod.config.save();
+            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "Successfully stored API key in config file!"));
+        } catch (Exception e) {
+            sender.addChatMessage(new ChatComponentText("Unexpected error: APIkey was not set!"));
+        }
     }
 }
