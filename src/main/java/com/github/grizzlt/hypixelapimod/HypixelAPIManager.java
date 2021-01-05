@@ -24,6 +24,7 @@ public class HypixelAPIManager implements HypixelPublicAPIModLibrary
     private AtomicBoolean firstTimeRequestingLimit = new AtomicBoolean();
     private AtomicBoolean resetRequestLimit = new AtomicBoolean();
     private AtomicBoolean subscribed = new AtomicBoolean(false);
+    private Mono<Integer> requestLimitCache = null;
 
     private Consumer<Integer> timeSink = null;
     private Consumer<Integer> requestSink = null;
@@ -93,11 +94,11 @@ public class HypixelAPIManager implements HypixelPublicAPIModLibrary
     public Mono<Boolean> getRequiredDelay(int myCount, boolean delayed)
     {
         return Mono.defer(() -> {
-            subscribeToClock(timeFlux);
+            Mono<Integer> requestLimitMono = subscribeToClock(timeFlux, requestFlux);
             int count = myCount > 0 ? myCount : requestCount.incrementAndGet();
             if (!resetRequestLimit.compareAndSet(false, true) || delayed)
             {
-                return requestFlux.next()
+                return requestLimitMono
                         .filter(limit -> count > limit - 9)
                         .flatMap(limit -> timeFlux.next()
                                 .delayUntil(received -> getRequiredDelay(Math.max(1, count - received), received < limit - 9)).thenReturn(true)
@@ -107,18 +108,25 @@ public class HypixelAPIManager implements HypixelPublicAPIModLibrary
         });
     }
 
-    public void subscribeToClock(Flux<Integer> clock)
+    public Mono<Integer> subscribeToClock(Flux<Integer> timeClock, Flux<Integer> requestClock)
     {
         if (subscribed.compareAndSet(false, true))
         {
             //System.out.println("Subscribed to clock!");
-            clock.next()
+            timeClock.next()
                     .doOnNext(o -> {
                         //System.out.println("Permanent clock woke up!");
+                        this.requestLimitCache = null;
                         subscribed.set(false);
                     })
                     .subscribeOn(Schedulers.parallel())
                     .subscribe();
         }
+        if (requestLimitCache == null)
+        {
+            this.requestLimitCache = requestClock.next().cache().subscribeOn(Schedulers.parallel());
+            this.requestLimitCache.subscribe();
+        }
+        return this.requestLimitCache;
     }
 }
