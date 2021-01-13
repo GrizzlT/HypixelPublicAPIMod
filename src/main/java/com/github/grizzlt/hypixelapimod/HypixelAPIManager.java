@@ -14,119 +14,124 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class HypixelAPIManager implements HypixelPublicAPIModLibrary
 {
-    private AtomicInteger requestCount = new AtomicInteger();
-    private AtomicInteger requestsReceived = new AtomicInteger();
-    private AtomicBoolean firstTimeRequestingLimit = new AtomicBoolean();
-    private AtomicBoolean resetRequestLimit = new AtomicBoolean();
     private AtomicBoolean subscribed = new AtomicBoolean(false);
-    private Mono<Integer> requestLimitCache = null;
+    private AtomicBoolean firstRequestSent = new AtomicBoolean();
 
-    private Consumer<Integer> timeSink = null;
-    private Consumer<Integer> requestSink = null;
+    private AtomicInteger requestCount = new AtomicInteger(0);
+    private AtomicInteger requestReceived = new AtomicInteger(0);
 
-    private Mono<Integer> timeMono = Mono.defer(() -> Mono.create((MonoSink<Integer> sink) -> {
-        timeSink = time -> {
-            if (time > 0) {
-                //System.out.println("Time to wait in timeMono: " + time);
-                timeSink = null;
-                sink.success(time);
-            }
-        };
-    })).subscribeOn(Schedulers.boundedElastic());
+    private AtomicReference<Consumer<Integer>> timeSink = new AtomicReference<>();
+    private AtomicReference<Consumer<Integer>> requestSink = new AtomicReference<>();
 
-    private Mono<Integer> requestMono = Mono.defer(() -> Mono.create((MonoSink<Integer> sink) -> {
-        requestSink = limit -> {
-            boolean firstTimePassed = firstTimeRequestingLimit.compareAndSet(false, true);
-            if (firstTimePassed || limit >= 116) {
-                //System.out.println("Request limit in requestMono: " + limit);
-                requestSink = null;
-                sink.success(limit);
-            }
-        };
-    })).subscribeOn(Schedulers.boundedElastic());
-
-    private Flux<Integer> timeFlux = Flux.generate((SynchronousSink<Integer> sink) -> {
-        int waitTime = timeMono.block();
-        //System.out.println("Time to wait in timeFlux: " + waitTime);
-        Mono.delay(Duration.ofSeconds(waitTime + 1)).block();
-        //System.out.println("Normal clock ran out!");
-        int receivedCount = requestsReceived.getAndSet(0);
-        resetRequestLimit.set(false);
-        //System.out.println("Requests: " + requestCount.updateAndGet(requests -> Math.max(0, requests - receivedCount)));
-        sink.next(receivedCount);
+    public Flux<Integer> requestLimitFlux = Flux.generate((SynchronousSink<Integer> sink) -> {
+        Integer limit = Mono.create((MonoSink<Integer> monoSink) -> {
+            requestSink.set(i -> {
+                //System.out.println("Request limit in sub-mono: " + i);
+                requestSink.set(null);
+                monoSink.success(i);
+            });
+        }).block();
+        sink.next(limit);
     }).subscribeOn(Schedulers.boundedElastic()).share();
 
-    private Flux<Integer> requestFlux = Flux.generate((SynchronousSink<Integer> sink) -> {
-        int requestLimit = requestMono.block();
-        //System.out.println("Request limit in RequestFlux: " + requestLimit);
-        sink.next(requestLimit);
+    public Flux<Integer> timeFlux = Flux.generate((SynchronousSink<Integer> sink) -> {
+        Integer time = Mono.create((MonoSink<Integer> monoSink) -> {
+            timeSink.set(i -> {
+                if (i == 0)
+                {
+                    firstRequestSent.set(false);
+                    System.out.println("Error detected!");
+                } else {
+                    //System.out.println("Time left in sub-mono: " + i);
+                    timeSink.set(null);
+                    monoSink.success(i);
+                }
+            });
+        }).block();
+        //System.out.println("Waiting on timer waiting!");
+        Mono.delay(Duration.ofSeconds(time + 2)).block();
+        int received = requestReceived.getAndSet(0);
+        //System.out.println("REceived requests: " + received);
+        int requested = requestCount.updateAndGet(count -> count - received);
+        //System.out.println("Pending request count: " + requested);
+        firstRequestSent.set(false);
+        requestLimitMono = this.requestLimitFlux.next().cache();
+        this.subscribeToClock(this.timeFlux, this.requestLimitMono).subscribe();
+        sink.next(received);
     }).subscribeOn(Schedulers.boundedElastic()).share();
+
+    private Mono<Integer> requestLimitMono = requestLimitFlux.next().cache();
 
     @Override
     public <T extends AbstractReply> Mono<T> handleHypixelAPIRequest(Function<HypixelAPI, CompletableFuture<T>> requestFunc)
     {
         if (!HypixelPublicAPIMod.instance.apiKeySet) return Mono.error(new PublicAPIKeyMissingException());
 
-        return Mono.just(0).delayUntil(o -> getRequiredDelay(0, false))
+        return Mono.just(0)
+                .delayUntil(o -> getRequiredDelay(0, false, 0))
                 .then(Mono.defer(() -> Mono.fromFuture(requestFunc.apply(HypixelPublicAPIMod.instance.getHypixelAPI()))
                         .doOnNext(reply -> {
-                            if (timeSink != null)
+                            Consumer<Integer> consumer = timeSink.get();
+                            if (consumer != null)
                             {
-                                timeSink.accept(reply.getSecondsTillReset());
+                                consumer.accept(reply.getSecondsTillReset());
                             }
-                            if (requestSink != null)
+                            consumer = requestSink.get();
+                            if (consumer != null)
                             {
-                                requestSink.accept(reply.getRequestAmountLeft());
+                                consumer.accept(reply.getRequestAmountLeft());
                             }
-                            requestsReceived.incrementAndGet();
-                        })
-                )).onErrorResume(throwable -> {
+                            requestReceived.incrementAndGet();
+                            //System.out.println("Received request!");
+                        })))
+                .onErrorResume(throwable -> {
                     throwable.printStackTrace();
                     return Mono.empty();
                 }).subscribeOn(Schedulers.parallel());
     }
 
-    public Mono<Boolean> getRequiredDelay(int myCount, boolean delayed)
+    public Mono<Boolean> getRequiredDelay(int myCount, boolean delayed, int index)
     {
         return Mono.defer(() -> {
-            Mono<Integer> requestLimitMono = subscribeToClock(timeFlux, requestFlux);
-            int count = myCount > 0 ? myCount : requestCount.incrementAndGet();
-            if (!resetRequestLimit.compareAndSet(false, true) || delayed)
+            //int count = myCount > 0 ? myCount : requestCount.incrementAndGet();
+            if (!firstRequestSent.compareAndSet(false, true) || delayed)
             {
-                return requestLimitMono
-                        .filter(limit -> count > limit - 9)
-                        .flatMap(limit -> timeFlux.next()
-                                .delayUntil(received -> getRequiredDelay(Math.max(1, count - received), received < limit - 9)).thenReturn(true)
+                //System.out.println("Waiting: " + index);
+                return Mono.defer(() -> this.requestLimitMono)
+                        .flatMap(limit -> Mono.defer(() -> Mono.just(myCount > 0 ? myCount : requestCount.getAndIncrement()))
+                                .filter(count -> count > limit - 10)
+                                .flatMap(count -> timeFlux.next()
+                                        .delayUntil(received -> getRequiredDelay(Math.max(1, count - received), received < limit - 9, index)).thenReturn(true)
+                                )
                         ).switchIfEmpty(Mono.just(false).subscribeOn(Schedulers.immediate()));
             }
-            return Mono.just(false).subscribeOn(Schedulers.immediate());
+            //System.out.println("Passing on!");
+            this.subscribeToClock(timeFlux, this.requestLimitMono).subscribe();
+            return Mono.just(this.requestCount.getAndIncrement()).map(o -> false).subscribeOn(Schedulers.immediate());
         });
     }
 
-    public Mono<Integer> subscribeToClock(Flux<Integer> timeClock, Flux<Integer> requestClock)
+    public Mono<Integer> subscribeToClock(Flux<Integer> clock, Mono<Integer> requestClock)
     {
-        if (subscribed.compareAndSet(false, true))
-        {
-            //System.out.println("Subscribed to clock!");
-            timeClock.next()
-                    .doOnNext(o -> {
-                        //System.out.println("Permanent clock woke up!");
-                        this.requestLimitCache = null;
-                        subscribed.set(false);
-                    })
-                    .subscribeOn(Schedulers.parallel())
-                    .subscribe();
-        }
-        if (requestLimitCache == null)
-        {
-            this.requestLimitCache = requestClock.next().cache().subscribeOn(Schedulers.parallel());
-            this.requestLimitCache.subscribe();
-        }
-        return this.requestLimitCache;
+        return Mono.defer(() -> {
+            if (subscribed.compareAndSet(false, true))
+            {
+                //System.out.println("Subscribed to clock!");
+                clock.next()
+                        .doOnNext(o -> {
+                            //System.out.println("Permanent clock woke up!");
+                            subscribed.set(false);
+                        }).subscribeOn(Schedulers.parallel())
+                        .subscribe();
+                requestClock.subscribe();
+            }
+            return Mono.just(0);
+        });
     }
 }
