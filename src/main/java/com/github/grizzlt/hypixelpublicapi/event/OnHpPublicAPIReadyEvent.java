@@ -1,20 +1,25 @@
 package com.github.grizzlt.hypixelpublicapi.event;
 
-import com.github.grizzlt.hypixelpublicapi.HypixelPublicAPIModLibrary;
+import com.github.grizzlt.hypixelpublicapi.HypixelPublicAPIModApi;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
- * This event will be triggered by the mod that will hold the api
+ * This event will be triggered by the mod that holds the api
  */
 public class OnHpPublicAPIReadyEvent extends Event
 {
-    public final HypixelPublicAPIModLibrary publicAPILibrary;
+    private final HypixelPublicAPIModApi hypixelApiMod;
 
     /**
-     * @param publicAPILibrary the class that will the api
+     * @param hypixelApiMod Instance of the api manager
      */
-    public OnHpPublicAPIReadyEvent(HypixelPublicAPIModLibrary publicAPILibrary)
+    public OnHpPublicAPIReadyEvent(HypixelPublicAPIModApi hypixelApiMod)
     {
-        this.publicAPILibrary = publicAPILibrary;
+        this.hypixelApiMod = hypixelApiMod;
+    }
+
+    public HypixelPublicAPIModApi getApiManager()
+    {
+        return this.hypixelApiMod;
     }
 }
