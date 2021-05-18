@@ -2,7 +2,8 @@ package com.github.grizzlt.hypixelapimod;
 
 import com.github.grizzlt.hypixelapimod.commands.*;
 import com.github.grizzlt.hypixelpublicapi.event.OnHpPublicAPIReadyEvent;
-import com.github.grizzlt.shadowedLibs.net.hypixel.api.HypixelAPI;
+import net.hypixel.api.HypixelAPI;
+import net.hypixel.api.reactor.ReactorHttpClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
@@ -10,8 +11,6 @@ import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -31,7 +30,7 @@ public class HypixelPublicAPIMod
     public UUID apiKey;
     private HypixelAPI hypixelAPI;
 
-    private HypixelAPIManager apiManager = new HypixelAPIManager();
+    private final HypixelAPIManager apiManager = new HypixelAPIManager();
 
     @Mod.Instance
     public static HypixelPublicAPIMod instance = null;
@@ -47,22 +46,20 @@ public class HypixelPublicAPIMod
         config = new Configuration(configFile);
         config.load();
         System.out.println(configFile.getAbsolutePath());
-        Property tempKeyProp = config.get(Configuration.CATEGORY_GENERAL, "apiKey", "");
-        Property tempLoadAuto = config.get(Configuration.CATEGORY_GENERAL, "loadAuto", true);
-        if (config.hasChanged()) {
-            config.save();
-        }
 
         if (config.get(Configuration.CATEGORY_GENERAL, "loadAuto", true).getBoolean()) {
             try {
-                this.apiKey = UUID.fromString(config.get(Configuration.CATEGORY_GENERAL, "apiKey", "").getString());
-                this.setApiKey(this.apiKey);
+                this.setApiKey(UUID.fromString(config.get(Configuration.CATEGORY_GENERAL, "apiKey", "").getString()));
 
                 System.out.println("Automatically loaded stored api key!");
             } catch (IllegalArgumentException e) {
                 //e.printStackTrace();
                 System.out.println("Error: invalid key! (might have been empty)");
             }
+        }
+
+        if (config.hasChanged()) {
+            config.save();
         }
 
         //commands
@@ -82,7 +79,7 @@ public class HypixelPublicAPIMod
     @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(apiManager);
     }
 
@@ -125,7 +122,7 @@ public class HypixelPublicAPIMod
         }
 
         try {
-            this.hypixelAPI = new HypixelAPI(this.apiKey);
+            this.hypixelAPI = new HypixelAPI(new ReactorHttpClient(this.apiKey));
             this.apiKeySet = true;
         } catch (IllegalArgumentException e) {
             System.out.println("Error: Invalid key! (might have been null)");
