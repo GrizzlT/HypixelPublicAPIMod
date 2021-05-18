@@ -77,7 +77,9 @@ publishing {
     publications {
         hypixelmodapi(MavenPublication) {
             from components.java
-            // more goes in here
+
+            artifact packageSources
+            artifact packageJavadoc
 
             artifactId project.archivesBaseName
 
@@ -91,4 +93,13 @@ publishing {
             }
         }
     }
+}
+
+task packageJavadoc(type: Jar, dependsOn: 'javadoc') {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+task packageSources(type: Jar, dependsOn: 'classes') {
+    from sourceSets.main.allSource
+    classifier = 'sources'
 }
