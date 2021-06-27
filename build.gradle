@@ -58,7 +58,7 @@ reobf {
 }
 
 dependencies {
-    shade ('com.github.GrizzlT:HypixelPublicAPIMod:v2.0-library') {
+    shade ('com.github.GrizzlT:HypixelPublicAPIMod:v2.1.0-library') {
         /*exclude group: 'io.netty', module: 'netty-buffer'
         exclude group: 'io.netty', module: 'netty-codec'
         //exclude group: 'io.netty', module: 'netty-codec-http'
@@ -73,7 +73,7 @@ dependencies {
         exclude module: 'commons-io'
     }
 
-    shade ('com.github.GrizzlT.PublicAPI:hypixel-api-transport-reactor:4.0.0-SNAPSHOT') {
+    shade ('com.github.GrizzlT.PublicAPI:hypixel-api-transport-reactor:4.0.0-reactive-SNAPSHOT') {
         //xclude group: 'io.netty'
         exclude module: 'gson'
     }
