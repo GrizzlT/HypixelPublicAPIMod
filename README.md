@@ -2,7 +2,7 @@
 This is a forge mod implementation of the [Hypixel Public API](https://github.com/HypixelDev/PublicAPI)
 
 ## Main idea
-Some mods might want to use Hypixel's Public API (this project uses [my fork](https://github.com/GrizzlT/PublicAPI/tree/4.0.0-reactive) to add certain features to the game, and, indeed, the documentation does a good job of explaining how to implement this.
+Some mods might want to use Hypixel's Public API (this project uses [my fork](https://github.com/GrizzlT/PublicAPI/tree/4.0.0-reactive)) to add certain features to the game, and, indeed, the documentation does a good job of explaining how to implement this.
 
 **But** to use the api, you need a key obtainable from hypixel itself (see their documentation). The API also forces the user to limit their queries per minute (120/min default).
 
