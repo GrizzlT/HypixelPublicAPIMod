@@ -55,7 +55,7 @@ repositories {
 }*/
 
 dependencies {
-    compile ('com.github.GrizzlT.PublicAPI:hypixel-api-transport-reactor:4.0.0-SNAPSHOT') {
+    compile ('com.github.GrizzlT.PublicAPI:hypixel-api-transport-reactor:4.0.0-reactive-SNAPSHOT') {
         exclude module: 'gson'
         exclude module: 'guava'
         exclude module: 'commons-io'
