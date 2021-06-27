@@ -48,18 +48,40 @@ reobf {
         extraLines "PK: net/hypixel/api com/github/grizzlt/hypixelpublicapi/shadowedLibs/net/hypixel/api"
         extraLines "PK: org/reactivestreams com/github/grizzlt/hypixelpublicapi/shadowedLibs/org/reactivestreams"
         extraLines "PK: io/netty com/github/grizzlt/hypixelpublicapi/shadowedLibs/io/netty"
+
+        /*extraLines "PK: io/netty/handler/codec/dns com/github/grizzlt/hypixelpublicapi/shadowedLibs/io/netty/handler/codec/dns"
+        extraLines "PK: io/netty/handler/codec/http2 com/github/grizzlt/hypixelpublicapi/shadowedLibs/io/netty/handler/codec/http2"
+        extraLines "PK: io/netty/handler/proxy com/github/grizzlt/hypixelpublicapi/shadowedLibs/io/netty/handler/proxy"
+        extraLines "PK: io/netty/channel/unix com/github/grizzlt/hypixelpublicapi/shadowedLibs/io/netty/channel/unix"
+        extraLines "PK: io/netty/handler/codec/http/cookie com/github/grizzlt/hypixelpublicapi/shadowedLibs/io/netty/handler/codec/http/cookie"*/
     }
 }
 
 dependencies {
-    shade ('com.github.grizzlt.hypixel-public-api:hypixel-public-api-modapi:2.0.0') {
+    shade ('com.github.GrizzlT:HypixelPublicAPIMod:v2.0-library') {
+        /*exclude group: 'io.netty', module: 'netty-buffer'
+        exclude group: 'io.netty', module: 'netty-codec'
+        //exclude group: 'io.netty', module: 'netty-codec-http'
+        exclude group: 'io.netty', module: 'netty-codec-socks'
+        exclude group: 'io.netty', module: 'netty-common'
+        exclude group: 'io.netty', module: 'netty-handler'
+        exclude group: 'io.netty', module: 'netty-transport'
+        exclude group: 'io.netty', module: 'netty-transport-native-epoll'*/
+
         exclude module: 'gson'
         exclude module: 'guava'
         exclude module: 'commons-io'
     }
 
-    shade ('com.github.grizzlt.hypixel:hypixel-api-transport-reactor:4.0.0-SNAPSHOT') {
+    shade ('com.github.GrizzlT.PublicAPI:hypixel-api-transport-reactor:4.0.0-SNAPSHOT') {
+        //xclude group: 'io.netty'
         exclude module: 'gson'
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
     }
 }
 
