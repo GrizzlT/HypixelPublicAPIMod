@@ -2,43 +2,41 @@
 This is a forge mod implementation of the [Hypixel Public API](https://github.com/HypixelDev/PublicAPI)
 
 ## Main idea
-Some mods might want to use [Hypixel's Public API](https://github.com/HypixelDev/PublicAPI) to add certain features to the game, and, indeed,  the documentation does a good job of explaining how to implement this.
+Some mods might want to use Hypixel's Public API (this project uses [my fork](https://github.com/GrizzlT/PublicAPI/tree/4.0.0-reactive) to add certain features to the game, and, indeed, the documentation does a good job of explaining how to implement this.
 
-**But** to use the api, you need a key obtainable from hypixel itself (see their documentation). The API also forces the user to limit their queries per minute to 120.
+**But** to use the api, you need a key obtainable from hypixel itself (see their documentation). The API also forces the user to limit their queries per minute (120/min default).
 
-It wouldn't really be user-friendly if every mod handled this part (especially the key part) on their own.
+It wouldn't really be user-friendly if every mod handled this api part (especially the key part) on their own.
 
-That's the reason why this mod was made. It has following features:
-- This mod will manage the user's `API key` in one place
-- This mod will provide an instance of the API to other mods!
-- This mod will check whether an `API key` is present and whether the amount of queries sent, hasn't exceeded the query limit.
-
-Currently, this check is hard-coded and defaults to 115 queries every 62 seconds. (*115 for the purpose of being 100% certain there will be no query loss, this will change in the future to allow a more flexible way of defining this limit)*
+That's the reason why this mod came around. Features include:
+- This mod manages the user's `API key` in one place
+- This mod provides an instance of the API to any other mod
+- This mod checks whether an `API key` is present and enforces the request limit whilst not losing any requests.
 
 ## Getting Started (for Forge users)
-Download the latest [release](https://github.com/ThomasVDP/HypixelPublicAPIMod/releases) and put the `HypixelPublicAPIMod-1.0.jar`-file in your Minecraft mods directory.
+Download the latest [release](https://github.com/GrizzlT/HypixelPublicAPIMod/releases) and put the `HypixelPublicAPIMod-*.*.*.jar`-file in your Minecraft mods directory.
 
 That's it, the mod is ready for use!
-See [Commands](#Commands) for further information.
+See [Commands](#Commands) for more information.
 
 ## Getting Started (for developers)
-This mod's API can be added to your project using JitPack (use tag `v1.0-library`).
-[![](https://jitpack.io/v/ThomasVDP/HypixelPublicAPIMod.svg)](https://jitpack.io/#ThomasVDP/HypixelPublicAPIMod)
+This mod's API can be added to your project using JitPack (use latest release tag).
+[![](https://jitpack.io/v/GrizzlT/HypixelPublicAPIMod.svg)](https://jitpack.io/#GrizzlT/HypixelPublicAPIMod)
 
 Subscribe to the `OnHpPublicAPIReadyEvent` event to receive an instance of the `HypixelPublicAPIModLibrary`.
 
-To send a request, simply call `HypixelPublicAPIModLibrary#handleHypixelAPIRequest()`. You will get a `Promise` back to process the result of the query.
+To send a request, simply call `HypixelPublicAPIModLibrary#handleHypixelAPIRequest()`. You will get a `Mono` back to process the result of the query.
 
-"A promise? What's that?!" you might think. Don't worry, it's part of a great library that really improves the `CompletableFuture` class in java. I definitely recommend checking out [their github](https://github.com/vsilaev/tascalate-concurrent).
+For more information on Monos and project reactor, check out their [website](https://projectreactor.io).
 
 
 ## Commands
-When using the mod you need to tell this mod your `API key` in order for it to work.
+When using the mod you need to give this mod your `API key` in order for it to work.
 
-### You just need 1 command!
+### All you need is one command!
 - `/hpapiquickstart`
 
-*Recommended* This command sets everything up for you to use this mod more easily!
+*Run this command on hypixel.net for it to work!*
 
 #### For finer control:
 - `/hpsetapikey <key>`
