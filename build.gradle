@@ -11,16 +11,20 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
+plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
+    id "com.dorongold.task-tree" version "1.5"
+}
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven-publish'
 
-
-version = "2.0.0"
+version = "2.2.0"
 group= "com.github.grizzlt.hypixelapimod" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "HypixelPublicAPIMod"
 
-sourceCompatibility = targetCompatibility = 1.8
-
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 // Use UTF-8 for encoding
 compileJava.options.encoding = 'UTF-8'
 
@@ -30,48 +34,54 @@ minecraft {
     mappings = "stable_20"
 }
 
-configurations {
-    shade
-    compile.extendsFrom(shade)
-}
-
 repositories {
-    repositories {
-        maven { url 'https://repo.hypixel.net/repository/Hypixel/' }
-    }
+    maven { url 'https://repo.hypixel.net/repository/Hypixel/' }
+    maven { url 'https://jitpack.io' }
 }
 
-reobf {
-    jar {
-        extraLines "PK: reactor com/github/grizzlt/hypixelpublicapi/shadowedLibs/reactor"
-        extraLines "PK: net/hypixel/api com/github/grizzlt/hypixelpublicapi/shadowedLibs/net/hypixel/api"
-        extraLines "PK: org/reactivestreams com/github/grizzlt/hypixelpublicapi/shadowedLibs/org/reactivestreams"
-        extraLines "PK: io/netty com/github/grizzlt/hypixelpublicapi/shadowedLibs/io/netty"
+sourceSets {
+    api
+    main {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
     }
 }
 
 dependencies {
-    shade ('com.github.GrizzlT:HypixelPublicAPIMod:library-SNAPSHOT') {
+    apiCompile 'net.hypixel:hypixel-api-core:4.0'
+    compile ('net.hypixel:hypixel-api-core:4.0') {
         exclude module: 'gson'
-        exclude module: 'guava'
-        exclude module: 'commons-io'
+    }
+
+    compile ('com.github.GrizzlT.PublicAPI:hypixel-api-transport-reactor:bugfix~reactor_concurrency-SNAPSHOT') {
+        exclude module: 'hypixel-api-core'
     }
 }
 
-allprojects {
-    repositories {
-        maven { url 'https://jitpack.io' }
-    }
+task apiJar(type: Jar) {
+    description = "Assembles api sourceSet"
+    group = "build"
+    appendix = "api"
+    from sourceSets.api.output
 }
 
-jar {
-    dependsOn configurations.compile
-    from {
+shadowJar {
+    from sourceSets.api.output.classesDir
+    classifier = ''
+    /*from {
         configurations.shade.collect {
             it.isDirectory() ? it : zipTree(it)
         }
+    }*/
+    //exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/INDEX.LIST', 'META-INF/**'
+}
+
+reobf {
+    shadowJar {
+        extraLines "PK: reactor com/github/grizzlt/hypixelapimod/shadowedLibs/reactor"
+        extraLines "PK: org/reactivestreams com/github/grizzlt/hypixelapimod/shadowedLibs/org/reactivestreams"
+        extraLines "PK: io/netty com/github/grizzlt/hypixelapimod/shadowedLibs/io/netty"
     }
-    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/INDEX.LIST', 'META-INF/**'
 }
 
 processResources
@@ -91,5 +101,32 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+task apiJavadoc(type: Javadoc) {
+    classpath = sourceSets.api.output + sourceSets.api.compileClasspath
+    source = sourceSets.api.allJava
+}
+
+task packageApiJavadoc(type: Jar, dependsOn: 'apiJavadoc') {
+    from apiJavadoc.destinationDir
+    classifier = 'api-javadoc'
+}
+
+task packageApiSources(type: Jar, dependsOn: 'apiClasses') {
+    from sourceSets.api.allSource
+    classifier = 'api-sources'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId 'hypixelapimod'
+
+            artifact apiJar
+            artifact packageApiJavadoc
+            artifact packageApiSources
+        }
     }
 }

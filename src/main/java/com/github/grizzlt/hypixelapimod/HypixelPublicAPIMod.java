@@ -1,7 +1,7 @@
 package com.github.grizzlt.hypixelapimod;
 
+import com.github.grizzlt.hypixelapimod.api.event.HypixelAPIReadyEvent;
 import com.github.grizzlt.hypixelapimod.commands.*;
-import com.github.grizzlt.hypixelpublicapi.event.OnHpPublicAPIReadyEvent;
 import net.hypixel.api.HypixelAPI;
 import net.hypixel.api.reactor.ReactorHttpClient;
 import net.minecraft.client.Minecraft;
@@ -86,7 +86,7 @@ public class HypixelPublicAPIMod
     @Mod.EventHandler
     public void loadComplete(FMLLoadCompleteEvent event)
     {
-        MinecraftForge.EVENT_BUS.post(new OnHpPublicAPIReadyEvent(this.apiManager));
+        HypixelAPIReadyEvent.API_READY_EVENT.fireEvent(this.apiManager);
     }
 
     @SubscribeEvent
