@@ -116,8 +116,12 @@ publishing {
             artifactId 'hypixelapimod'
 
             artifact apiJar
-            artifact packageApiJavadoc
-            artifact packageApiSources
+            artifact packageApiJavadoc {
+                classifier = 'javadoc'
+            }
+            artifact packageApiSources {
+                classifier = 'sources'
+            }
 
             pom.withXml { pomXml ->
                 Node dependencies = new Node(pomXml.asNode(), 'dependencies')
