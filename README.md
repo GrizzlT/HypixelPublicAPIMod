@@ -2,54 +2,50 @@
 This is a forge mod implementation of the [Hypixel Public API](https://github.com/HypixelDev/PublicAPI)
 
 ## Main idea
-Some mods might want to use Hypixel's Public API (this project uses [my fork](https://github.com/GrizzlT/PublicAPI/tree/4.0.0-reactive)) to add certain features to the game, and, indeed, the documentation does a good job of explaining how to implement this.
+Some mod developers might want to use Hypixel's Public API to add certain features to the game, and their documentation does a good job of explaining how to implement this.
 
-**But** to use the api, you need a key obtainable from hypixel itself (see their documentation). The API also forces the user to limit their queries per minute (120/min default).
+**But** the API is for most things only interesting when you use an `API-Key` (see Hypixel's documentation). The API also enforces throttling of the requests (with a default rate of 120 req/min).
 
-It wouldn't really be user-friendly if every mod handled this api part (especially the key part) on their own.
+It wouldn't really be user-friendly if every mod handled this API part (especially the key part) on their own.
 
-That's the reason why this mod came around. Features include:
-- This mod manages the user's `API key` in one place
-- This mod provides an instance of the API to any other mod
-- This mod checks whether an `API key` is present and enforces the request limit whilst not losing any requests.
+So we came up with this thing!
+Features include:
+- This mod manages the user's `API-key` in one place
+- This mod provides a shared instance of the API to other mods
+- This mod checks whether an `API-key` is present and automatically prevents mod from going over the user's current max request rate.
 
 ## Getting Started (for Forge users)
 Download the latest [release](https://github.com/GrizzlT/HypixelPublicAPIMod/releases) and put the `HypixelPublicAPIMod-*.*.*.jar`-file in your Minecraft mods directory.
 
-That's it, the mod is ready for use!
+That's it, the mod is ready to use!
 See [Commands](#Commands) for more information.
 
 ## Getting Started (for developers)
-This mod's API can be added to your project using JitPack (use latest library release tag).
+This dev-api is available on jitpack (as `com.github.GrizzlT:HypixelPublicAPIMod:<version>`)
 
-Subscribe to the `OnHpPublicAPIReadyEvent` event to receive an instance of the `HypixelPublicAPIModLibrary`.
+Use `HypixelAPIReadyEvent#subscribeToEvent()` to add a listener that will receive the api instance when ready.
 
-To send a request, simply call `HypixelPublicAPIModLibrary#handleHypixelAPIRequest()`. You will get a `Mono` back to process the result of the query.
-
-For more information on Monos and project reactor, check out their [website](https://projectreactor.io).
-
+Sending a request is as easy as calling `HypixelPublicAPIModApi#handleHypixelAPIRequest` with the necessary request logic. This will return a `CompletableFuture` containing the response.
 
 ## Commands
-When using the mod you need to give this mod your `API key` in order for it to work.
+When using this mod you will need to provide your `API-key`. There are several commands to deal with this.
 
-### All you need is one command!
+### All you (effectively) need is one command!
 - `/hpapiquickstart`
 
-*Run this command on hypixel.net for it to work!*
+(*Run this command on hypixel.net for it to work!*)
 
 #### For finer control:
 - `/hpsetapikey <key>`
 
-Use this command to inform the mod about your key, the `<key>` argument must be replaced by the [`API key`](https://github.com/HypixelDev/PublicAPI#obtaining-an-api-key) you received from hypixel.
+Use this command to inform the mod about your `API-key`, the `<key>` argument must be replaced by the [`API-key`](https://github.com/HypixelDev/PublicAPI#obtaining-an-api-key) you got from hypixel.
 - `/hpsaveapikey`
 
-Use this command to save the `API key` in the config files. It will be loaded at startup by default. (*this behavior can be changed in the mod config*)
+Use this command to save the `API-key` to the config file. It will be loaded at startup by default. (*this behavior can be changed in the mod's config*)
 #### Other commands:
 - `/hpunsetapikey`
 
-Use this command to disable the api. This command is necessary to change your `API key`.
+Use this command to disable the api. This command is necessary to change your `API-key`.
 - `/hploadapikey`
 
-Use this command to load your `API key` from the config files. This is usually only required if you don't want the mod to automatically load the keys at startup.
-
-> Written with [StackEdit](https://stackedit.io/).
+Use this command to load your `API-key` from the config file. This is usually only required if you don't allow the mod to automatically load the key at startup.
